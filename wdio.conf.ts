@@ -1,4 +1,5 @@
 import type { Options } from "@wdio/types";
+import { join } from "path";
 export const config: Options.Testrunner = {
   //
   // ====================
@@ -9,11 +10,13 @@ export const config: Options.Testrunner = {
   autoCompileOpts: {
     autoCompile: true,
     tsNodeOpts: {
-      project: "./tsconfig.json",
+      project: "./tsconfig.e2e.json",
       transpileOnly: true,
     },
   },
-
+  // path: "/wd/hub",
+  hostname: "127.0.0.1",
+  protocol: "http",
   port: 4723,
   //
   // ==================
@@ -30,7 +33,10 @@ export const config: Options.Testrunner = {
   // The path of the spec files will be resolved relative from the directory of
   // of the config file unless it's absolute.
   //
-  specs: ["./test/specs/**/*.ts"],
+  specs: [
+    // ToDo: define location for spec files here
+    "test/specs/**/*.spec.ts",
+  ],
   // Patterns to exclude.
   exclude: [
     // 'path/to/excluded/files'
@@ -51,7 +57,7 @@ export const config: Options.Testrunner = {
   // and 30 processes will get spawned. The property handles how many capabilities
   // from the same test should run tests.
   //
-  maxInstances: 10,
+  maxInstances: 2,
   //
   // If you have trouble getting all important capabilities together, check out the
   // Sauce Labs platform configurator - a great tool to configure your capabilities:
@@ -60,16 +66,48 @@ export const config: Options.Testrunner = {
   capabilities: [
     {
       // capabilities for local Appium web tests on an Android Emulator
-      "appium:platformName": "Android",
-      // browserName: 'Chrome',
-      "appium:deviceName": "emulator-5554",
+      platformName: "Android",
+      // browserName: "",
+      "appium:udid": "emulator-5554",
       "appium:platformVersion": "14.0",
       "appium:automationName": "UiAutomator2",
-      "appium:app": "app/ApiDemos-debug.apk",
-      // "appium:udid": "emulator-5554",
+      "appium:app": join(process.cwd(), "./app/1.0.72-dev (100).apk"),
+      "appium:noReset": false,
+      // "appium:autoGrantPermissions": true,
+      "appium:appActivity": "com.ttbbank.top.MainActivity",
+      "appium:appPackage": "com.ttbbank.top.dev",
+      // webviewDevToolsPort: "9222",
+    },
+
+    {
+      // capabilities for local Appium web tests on an Android Emulator
+      platformName: "Android",
+      // browserName: "",
+      "appium:udid": "emulator-5556",
+      "appium:platformVersion": "14.0",
+      "appium:automationName": "UiAutomator2",
+      "appium:app": join(process.cwd(), "./app/1.0.72-dev (100).apk"),
+      "appium:noReset": false,
+      // "appium:autoGrantPermissions": true,
+      "appium:appActivity": "com.ttbbank.top.MainActivity",
+      "appium:appPackage": "com.ttbbank.top.dev",
+      // webviewDevToolsPort: "9222",
     },
   ],
-
+  // services: [
+  //   [
+  //     "appium",
+  //     {
+  //       logPath: "./",
+  //     },
+  //   ],
+  // ],
+  // framework: "mocha",
+  // reporters: ["spec"],
+  // mochaOpts: {
+  //   ui: "bdd",
+  //   timeout: 60000,
+  // },
   //
   // ===================
   // Test Configurations
@@ -101,10 +139,10 @@ export const config: Options.Testrunner = {
   // with `/`, the base url gets prepended, not including the path portion of your baseUrl.
   // If your `url` parameter starts without a scheme or `/` (like `some/path`), the base url
   // gets prepended directly.
-  // baseUrl: 'http://localhost:8080',
+  baseUrl: "",
   //
   // Default timeout for all waitFor* commands.
-  waitforTimeout: 10000,
+  waitforTimeout: 60000,
   //
   // Default timeout in milliseconds for request
   // if browser driver or grid doesn't send response
@@ -117,7 +155,7 @@ export const config: Options.Testrunner = {
   // Services take over a specific job you don't want to take care of. They enhance
   // your test setup with almost no effort. Unlike plugins, they don't add new
   // commands. Instead, they hook themselves up into the test process.
-  services: ["appium"],
+  // services: ["appium"],
 
   // Framework you want to run your specs with.
   // The following are supported: Mocha, Jasmine, and Cucumber
@@ -202,7 +240,11 @@ export const config: Options.Testrunner = {
    * @param {object}         browser      instance of created browser/device session
    */
   // before: function (capabilities, specs) {
+  //   console.log("Before hook executed");
+  //   console.log("Capabilities:", capabilities);
+  //   console.log("Specs:", specs);
   // },
+
   /**
    * Runs before a WebdriverIO command gets executed.
    * @param {string} commandName hook command name
